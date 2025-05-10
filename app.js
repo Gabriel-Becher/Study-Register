@@ -20,4 +20,4 @@ class App {
   }
 }
 
-export default new App().app;
+module.exports = new App().app;
