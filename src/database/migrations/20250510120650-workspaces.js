@@ -21,6 +21,9 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
         allowNull: true,
+        validate: {
+          len: [0, 500],
+        },
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -31,6 +34,11 @@ module.exports = {
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
+      },
+      public: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,
