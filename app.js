@@ -1,7 +1,13 @@
-const express = require("express");
 require("dotenv").config();
-const path = require("path");
-const fs = require("fs");
+
+const express = require("express");
+
+const { join, resolve } = require("path");
+const { existsSync, mkdirSync } = require("fs");
+
+require("./src/database")
+
+const userRoutes = require("./src/routes/userRoutes");
 class App {
   constructor() {
     this.app = express();
@@ -13,18 +19,17 @@ class App {
   middlewares() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.static(resolve(__dirname, "..", "uploads")));
   }
 
   routes() {
-    this.app.get("/", (req, res) => {
-      res.send("Hello World!");
-    });
+    this.app.use("/users", userRoutes);
   }
 
   uploadPath(){
-    if(!fs.existsSync(path.join(__dirname, "uploads", "images"))){ 
-      fs.mkdirSync(path.join(__dirname, "uploads"));
-      fs.mkdirSync(path.join(__dirname, "uploads", "images"));
+    if(!existsSync(join(__dirname, "uploads", "images"))){ 
+      mkdirSync(join(__dirname, "uploads"));
+      mkdirSync(join(__dirname, "uploads", "images"));
     }
   }
 }

@@ -4,7 +4,11 @@ const User = require("../models/User");
 
 const models = [User];
 
-const connection = new Sequelize(databaseConfig);
+const connection = new Sequelize({
+  ...databaseConfig,
+  dialect: "postgres",
+  models,
+});
 
 models.forEach((model) => model.init(connection));
 models.forEach((model) => {

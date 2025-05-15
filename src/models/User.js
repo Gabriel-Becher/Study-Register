@@ -56,11 +56,11 @@ class User extends Model {
       }
     );
   }
-  static associate(models) {
+  /* static associate(models) {
     this.hasMany(models.Workspace, {
       foreignKey: "user_id",
     });
-  }
+  } */
 }
 
 module.exports = User;
