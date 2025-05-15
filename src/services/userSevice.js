@@ -8,12 +8,6 @@ class UserService {
     try {
       const users = await User.findAll({
         attributes: { exclude: ["password"] },
-        include: [
-          {
-            model: Workspace,
-            attributes: ["id", "title", "description"],
-          },
-        ],
       });
       if (!users || users.length === 0) {
         return { status: 404, errors: ["No users found"], data: [] };
@@ -29,13 +23,6 @@ class UserService {
     try {
       const user = await User.findByPk(id, {
         attributes: { exclude: ["password"] },
-        include: [
-          {
-            model: Workspace,
-            as: "workspaces",
-            attributes: ["id", "title", "description", "public"],
-          },
-        ],
       });
       if (!user) {
         return { status: 404, errors: ["User not found"], data: null };

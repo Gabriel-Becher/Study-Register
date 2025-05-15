@@ -5,9 +5,11 @@ const express = require("express");
 const { join, resolve } = require("path");
 const { existsSync, mkdirSync } = require("fs");
 
-require("./src/database")
+require("./src/database");
 
 const userRoutes = require("./src/routes/userRoutes");
+const workspaceRoutes = require("./src/routes/workspaceRoutes");
+
 class App {
   constructor() {
     this.app = express();
@@ -24,10 +26,11 @@ class App {
 
   routes() {
     this.app.use("/users", userRoutes);
+    this.app.use("/workspaces", workspaceRoutes);
   }
 
-  uploadPath(){
-    if(!existsSync(join(__dirname, "uploads", "images"))){ 
+  uploadPath() {
+    if (!existsSync(join(__dirname, "uploads", "images"))) {
       mkdirSync(join(__dirname, "uploads"));
       mkdirSync(join(__dirname, "uploads", "images"));
     }

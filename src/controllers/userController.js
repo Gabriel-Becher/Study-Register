@@ -1,7 +1,5 @@
 const userService = require("../services/userSevice");
 
-const User = require("../models/User");
-
 class UserController {
   async getAllUsers(req, res) {
     const { status, errors, data } = await userService.getAllUsers();
@@ -42,11 +40,11 @@ class UserController {
         .json({ error: ["User ID is required"], data: null });
     }
     try {
-      const user = await User.findByPk(id);
+      const user = (await userService.getUserById(id)).data;
       if (!user) {
         return res.status(404).json({ error: ["User not found"], data: null });
       }
-      await user.update(req.body);
+      await userService.updateUser(id, req.body);
       return res.status(200).json({ error: [], data: user });
     } catch (error) {
       return res
@@ -78,6 +76,5 @@ class UserController {
     }
   }
 }
-const controller = new UserController();
 
-module.exports = controller;
+module.exports = new UserController();
