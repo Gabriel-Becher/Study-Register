@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const User = require("../models/User");
 const Workspace = require("../models/Workspace");
 
@@ -7,7 +8,7 @@ class UserService {
   static async getAllUsers() {
     try {
       const users = await User.findAll({
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ["password_hash"] },
       });
       if (!users || users.length === 0) {
         return { status: 404, errors: ["No users found"], data: [] };
@@ -35,23 +36,38 @@ class UserService {
 
   static async createUser(userData) {
     try {
-      const { name, email, password } = userData;
-      errors = [];
+      const exists = await this.checkExists(userData.email);
+      if (exists) {
+        return { status: 401, error: ["User already exists"], data: null };
+      }
+
+      let { name, email, password } = userData;
+
+      name = name.trim();
+      email = email.trim();
+      password = password.trim();
+
+      const errors = [];
       !name && errors.push("Name is required");
       !email && errors.push("Email is required");
       !password && errors.push("Password is required");
       if (errors.length > 0) {
         return { status: 400, errors, data: null };
       }
-      const hashedPassword = await bcrypt.hash(password, 10);
+
       const newUser = await User.create({
         name,
         email,
-        password: hashedPassword,
+        password,
       });
       return { status: 201, errors: [], data: newUser };
     } catch (error) {
-      return { status: 500, errors: ["Error creating user"], data: null };
+      console.log(error);
+      return {
+        status: 500,
+        errors: [error /* "Error creating user" */],
+        data: null,
+      };
     }
   }
 
@@ -87,6 +103,14 @@ class UserService {
     } catch (error) {
       return { status: 500, errors: ["Error deleting user"], data: null };
     }
+  }
+
+  static async checkExists(email) {
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      return true;
+    }
+    return false;
   }
 }
 

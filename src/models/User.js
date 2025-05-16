@@ -1,4 +1,5 @@
 const { Sequelize, Model } = require("sequelize");
+const bcript = require("bcrypt");
 
 class User extends Model {
   static init(sequelize) {
@@ -55,6 +56,11 @@ class User extends Model {
         sequelize,
       }
     );
+    this.addHook("beforeSave", async (user) => {
+      if (user.password) {
+        user.password_hash = await bcript.hash(user.password, 10);
+      }
+    });
   }
   static associate(models) {
     this.hasMany(models.Workspace, {

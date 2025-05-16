@@ -25,7 +25,7 @@ module.exports = {
         },
       },
       password_hash: {
-        type: Sequelize.STRING(32),
+        type: Sequelize.STRING(64),
         allowNull: false,
       },
       created_at: {

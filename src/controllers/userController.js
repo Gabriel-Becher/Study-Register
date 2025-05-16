@@ -23,12 +23,12 @@ class UserController {
 
   async createUser(req, res) {
     try {
-      const user = await User.create(req.body);
+      const user = await userService.createUser(req.body);
       return res.status(201).json({ error: [], data: user });
     } catch (error) {
       return res
         .status(500)
-        .json({ error: ["Error creating user"], data: null });
+        .json({ error: ["Error creating User"], data: null });
     }
   }
 
@@ -44,8 +44,11 @@ class UserController {
       if (!user) {
         return res.status(404).json({ error: ["User not found"], data: null });
       }
-      await userService.updateUser(id, req.body);
-      return res.status(200).json({ error: [], data: user });
+      const { status, error, data } = await userService.updateUser(
+        id,
+        req.body
+      );
+      return res.status(status).json({ error, data });
     } catch (error) {
       return res
         .status(500)
@@ -61,11 +64,11 @@ class UserController {
         .json({ error: ["User ID is required"], data: null });
     }
     try {
-      const user = await User.findByPk(id);
-      if (!user) {
+      const { data } = await userService.getUserById(id);
+      if (!data) {
         return res.status(404).json({ error: ["User not found"], data: null });
       }
-      await user.destroy();
+      await data.destroy();
       return res
         .status(200)
         .json({ error: [], data: "User deleted successfully" });
