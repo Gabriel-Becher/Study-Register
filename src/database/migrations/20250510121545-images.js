@@ -8,18 +8,32 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
       },
       filename: {
         type: Sequelize.STRING(255),
         allowNull: false,
+        validate: {
+          len: {
+            args: [1, 255],
+            msg: "Filename must be between 1 and 255 characters",
+          },
+          notNull: {
+            msg: "Filename cannot be null",
+          },
+        },
       },
       position: {
         type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
-          isInt: true,
-          min: 0,
+          isInt: {
+            args: true,
+            msg: "Position must be an integer",
+          },
+          min: {
+            args: 0,
+            msg: "Position must be greater than or equal to 0",
+          },
         },
       },
       cell_id: {

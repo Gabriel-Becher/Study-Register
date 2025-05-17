@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+const { Op } = require("sequelize");
 const User = require("../models/User");
 const Workspace = require("../models/Workspace");
 
@@ -8,29 +8,55 @@ class UserService {
   static async getAllUsers() {
     try {
       const users = await User.findAll({
-        attributes: { exclude: ["password_hash"] },
+        attributes: {
+          exclude: ["password_hash"],
+        },
+        include: [
+          {
+            model: Workspace,
+            attributes: ["id", "title", "description", "public"],
+          },
+        ],
       });
+
       if (!users || users.length === 0) {
-        return { status: 404, errors: ["No users found"], data: [] };
+        return { status: 204, errors: [], data: [] };
       }
       return { status: 200, errors: [], data: users };
     } catch (error) {
-      console.log(error);
-      return { status: 500, errors: [error], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error fetching users"],
+        data: [],
+      };
     }
   }
 
   static async getUserById(id) {
     try {
       const user = await User.findByPk(id, {
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ["password_hash"] },
+        include: [
+          {
+            model: Workspace,
+            attributes: ["id", "title", "description", "public"],
+          },
+        ],
       });
       if (!user) {
-        return { status: 404, errors: ["User not found"], data: null };
+        return { status: 204, errors: [], data: [] };
       }
       return { status: 200, errors: [], data: user };
     } catch (error) {
-      return { status: 500, errors: ["Error fetching user"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error fetching user"],
+        data: [],
+      };
     }
   }
 
@@ -38,7 +64,7 @@ class UserService {
     try {
       const exists = await this.checkExists(userData.email);
       if (exists) {
-        return { status: 401, error: ["User already exists"], data: null };
+        return { status: 401, errors: ["User already exists"], data: [] };
       }
 
       let { name, email, password } = userData;
@@ -47,48 +73,64 @@ class UserService {
       email = email.trim();
       password = password.trim();
 
-      const errors = [];
-      !name && errors.push("Name is required");
-      !email && errors.push("Email is required");
-      !password && errors.push("Password is required");
-      if (errors.length > 0) {
-        return { status: 400, errors, data: null };
-      }
-
       const newUser = await User.create({
         name,
         email,
         password,
       });
-      return { status: 201, errors: [], data: newUser };
+
+      return { status: 201, errors: [], data: { id: newUser.id, name, email } };
     } catch (error) {
-      console.log(error);
       return {
         status: 500,
-        errors: [error /* "Error creating user" */],
-        data: null,
+        errors: [error.errors?.map((x) => x.message)] ?? [
+          "Error creating user",
+        ],
+        data: [],
       };
     }
   }
 
   static async updateUser(id, userData) {
     try {
-      const { name, email, password } = userData;
       const user = await User.findByPk(id);
-      if (!user) {
-        return { status: 404, errors: ["User not found"], data: null };
-      }
-      name ? user.name : name;
-      email ? user.email : email;
 
-      if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
+      if (!user) {
+        return { status: 404, errors: ["User not found"], data: [] };
       }
-      const result = await user.save();
-      return { status: 200, errors: [], data: result };
+
+      for (const key in userData) {
+        if (key in user) {
+          if (key === "id") {
+            return {
+              status: 401,
+              errors: ["User ID cannot be updated"],
+              data: [],
+            };
+          }
+          user[key] = userData[key];
+        }
+      }
+
+      const result = user.save();
+
+      return {
+        status: 200,
+        errors: [],
+        data: {
+          id: result.id,
+          name: result.name,
+          email: result.email,
+        },
+      };
     } catch (error) {
-      return { status: 500, errors: ["Error updating user"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error updating user"],
+        data: [],
+      };
     }
   }
 
@@ -96,21 +138,31 @@ class UserService {
     try {
       const user = await User.findByPk(id);
       if (!user) {
-        return { status: 404, errors: ["User not found"], data: null };
+        return { status: 404, errors: ["User not found"], data: [] };
       }
       await user.destroy();
-      return { status: 200, errors: [], data: null };
+      return { status: 200, errors: [], data: [] };
     } catch (error) {
-      return { status: 500, errors: ["Error deleting user"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error deleting user"],
+        data: [],
+      };
     }
   }
 
   static async checkExists(email) {
-    const user = await User.findOne({ where: { email } });
-    if (user) {
-      return true;
+    try {
+      const user = await User.findOne({ where: { email } });
+      if (user) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
     }
-    return false;
   }
 }
 

@@ -14,15 +14,23 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: false,
         validate: {
-          notEmpty: true,
-          len: [1, 50],
+          len: {
+            args: [1, 50],
+            msg: "Title must be between 1 and 50 characters",
+          },
+          notNull: {
+            msg: "Title cannot be null",
+          },
         },
       },
       description: {
         type: Sequelize.TEXT,
         allowNull: true,
         validate: {
-          len: [0, 500],
+          len: {
+            args: [0, 500],
+            msg: "Description must be less than 500 characters",
+          },
         },
       },
       user_id: {

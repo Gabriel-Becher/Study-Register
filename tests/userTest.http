@@ -4,7 +4,23 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "name": " Doe ",
-  "email": "johndn@gmun.br",
+  "name": "Gabriela",
+  "email": "gabriela@hotmail.com",
   "password": "123456"
 }
+###
+
+GET http://localhost:3000/users/2
+###
+
+PUT http://localhost:3000/users/2
+Content-Type: application/json
+
+{
+  "email": "teste2@gmail.com"
+}
+
+###
+
+DELETE http://localhost:3000/users/1
+###

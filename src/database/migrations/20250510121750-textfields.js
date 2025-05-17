@@ -8,21 +8,29 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
       },
       text: {
         type: Sequelize.TEXT,
         allowNull: false,
         validate: {
-          len: [1, 1000],
+          len: {
+            args: [1, 500],
+            msg: "Text must be between 1 and 500 characters",
+          },
         },
       },
       position: {
         type: Sequelize.INTEGER,
         allowNull: false,
         validate: {
-          isInt: true,
-          min: 0,
+          isInt: {
+            args: true,
+            msg: "Position must be an integer",
+          },
+          min: {
+            args: 0,
+            msg: "Position must be greater than or equal to 0",
+          },
         },
       },
       cell_id: {
