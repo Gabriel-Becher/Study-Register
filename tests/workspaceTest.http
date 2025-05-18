@@ -1,0 +1,32 @@
+GET http://localhost:3000/workspaces
+###
+
+GET http://localhost:3000/workspaces/2
+###
+
+GET http://localhost:3000/workspaces/user/1
+
+###
+POST http://localhost:3000/workspaces
+Content-Type: application/json
+
+{
+  "title": "Test Workspace",
+  "description": "This is a test workspace",
+  "user_id": 1,
+  "is_public": true
+}
+
+###
+
+PUT http://localhost:3000/workspaces/1
+Content-Type: application/json
+
+{
+  "description": "This is an updated test workspace",
+  "is_public": true,
+  "user_id": 2
+}
+
+###
+DELETE http://localhost:3000/workspaces/1

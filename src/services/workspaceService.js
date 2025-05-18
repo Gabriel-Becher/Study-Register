@@ -1,17 +1,38 @@
-const Workspace = require("../models/workspace");
-const User = require("../models/user");
-
+const { Op } = require("sequelize");
+const Workspace = require("../models/Workspace");
+const User = require("../models/User");
 class WorkspaceService {
-  static async getAllWorkspaces() {
+  static async getAllWorkspaces(title) {
     try {
-      const workspaces = await Workspace.findAll();
+      title = title ? title : "";
+      const workspaces = await Workspace.findAll(
+        {
+          where: {
+            title: {
+              [Op.like]: `%${title}%`,
+            },
+          },
+          include: [
+            {
+              model: User,
+              attributes: ["id", "name"],
+            },
+          ],
+        }
+      );
       if (!workspaces || workspaces.length === 0) {
         return { status: 404, errors: ["No workspaces found"], data: [] };
       }
       return { status: 200, errors: [], data: workspaces };
     } catch (error) {
-      console.log(error);
-      return { status: 500, errors: [error], data: null };
+      console.log(error)
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error fetching workspaces"],
+        data: [],
+      };
     }
   }
 
@@ -23,14 +44,20 @@ class WorkspaceService {
       }
       return { status: 200, errors: [], data: workspace };
     } catch (error) {
-      return { status: 500, errors: ["Error fetching workspace"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error fetching workspace"],
+        data: [],
+      };
     }
   }
 
-  static async getWorkspaceByUserId(userId) {
+  static async getWorkspacesByUserId(userId) {
     try {
       const workspaces = await Workspace.findAll({
-        where: { userId },
+        where: { user_id: userId },
       });
       if (!workspaces || workspaces.length === 0) {
         return {
@@ -41,41 +68,59 @@ class WorkspaceService {
       }
       return { status: 200, errors: [], data: workspaces };
     } catch (error) {
-      return { status: 500, errors: ["Error fetching workspaces"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error fetching workspaces"],
+        data: [],
+      };
     }
   }
 
   static async createWorkspace(workspaceData) {
     try {
-      const { name, userId } = workspaceData;
-      const errors = [];
-      !name && errors.push("Name is required");
-      !userId && errors.push("User ID is required");
-      if (errors.length > 0) {
-        return { status: 400, errors, data: null };
-      }
-      const newWorkspace = await Workspace.create({
-        name,
-        userId,
-      });
+      const newWorkspace = await Workspace.create(workspaceData);
       return { status: 201, errors: [], data: newWorkspace };
     } catch (error) {
-      return { status: 500, errors: ["Error creating workspace"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error creating workspace"],
+        data: [],
+      };
     }
   }
 
   static async updateWorkspace(id, workspaceData) {
     try {
-      const { name } = workspaceData;
       const workspace = await Workspace.findByPk(id);
-      if (!workspace) {
-        return { status: 404, errors: ["Workspace not found"], data: null };
+      if(!workspace) {
+        return { status: 404, errors: ["Workspace not found"], data: [] };
       }
-      name ? (workspace.name = name) : name;
+      for (const key in workspaceData) {
+        if (key in workspace) {
+          if (key === "id"|| key === "user_id") {
+            return {
+              status: 401,
+              errors: ["User ID cannot be updated"],
+              data: [],
+            };
+          }
+          workspace[key] = workspaceData[key];
+        }
+      }
       await workspace.save();
       return { status: 200, errors: [], data: workspace };
     } catch (error) {
-      return { status: 500, errors: ["Error updating workspace"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error updating workspace"],
+        data: [],
+      };
     }
   }
 
@@ -83,12 +128,18 @@ class WorkspaceService {
     try {
       const workspace = await Workspace.findByPk(id);
       if (!workspace) {
-        return { status: 404, errors: ["Workspace not found"], data: null };
+        return { status: 404, errors: ["Workspace not found"], data: [] };
       }
       await workspace.destroy();
-      return { status: 200, errors: [], data: null };
+      return { status: 200, errors: [], data: [] };
     } catch (error) {
-      return { status: 500, errors: ["Error deleting workspace"], data: null };
+      return {
+        status: 500,
+        errors: error.errors?.map((x) => {
+          x.message;
+        }) ?? ["Error deleting workspace"],
+        data: [],
+      };
     }
   }
 }

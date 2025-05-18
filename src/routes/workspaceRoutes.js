@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", workspaceController.getAllWorkspaces);
 router.get("/:id", workspaceController.getWorkspaceById);
-router.get("/user/:userId", workspaceController.getWorkspaceByUserId);
+router.get("/user/:userId", workspaceController.getWorkspacesByUserId);
 router.post("/", workspaceController.createWorkspace);
 router.put("/:id", workspaceController.updateWorkspace);
 router.delete("/:id", workspaceController.deleteWorkspace);

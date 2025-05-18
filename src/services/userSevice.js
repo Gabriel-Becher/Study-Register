@@ -2,11 +2,12 @@ const { Op } = require("sequelize");
 const User = require("../models/User");
 const Workspace = require("../models/Workspace");
 
-const bcrypt = require("bcrypt");
-
 class UserService {
-  static async getAllUsers() {
+  static async getAllUsers(name) {
     try {
+      if(!name) {
+        name = "";
+      }
       const users = await User.findAll({
         attributes: {
           exclude: ["password_hash"],
@@ -17,6 +18,11 @@ class UserService {
             attributes: ["id", "title", "description", "public"],
           },
         ],
+        where: {
+          name: {
+            [Op.like]: `%${name}%`,
+          },
+        },
       });
 
       if (!users || users.length === 0) {
