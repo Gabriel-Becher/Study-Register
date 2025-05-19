@@ -73,16 +73,12 @@ class UserService {
         return { status: 401, errors: ["User already exists"], data: [] };
       }
 
-      let { name, email, password } = userData;
-
-      name = name.trim();
-      email = email.trim();
-      password = password.trim();
+      const { name, email, password } = userData;
 
       const newUser = await User.create({
-        name,
-        email,
-        password,
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
       });
 
       return { status: 201, errors: [], data: { id: newUser.id, name, email } };

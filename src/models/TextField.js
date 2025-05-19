@@ -1,6 +1,6 @@
 const { Sequelize, Model } = require("sequelize");
 
-class TextField extends Model {
+class Textfield extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -24,4 +24,4 @@ class TextField extends Model {
   }
 }
 
-module.exports = TextField;
+module.exports = Textfield;

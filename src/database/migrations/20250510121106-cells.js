@@ -12,7 +12,7 @@ module.exports = {
       },
       workspace_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "workspaces",
           key: "id",
@@ -28,7 +28,7 @@ module.exports = {
           min: 0,
         },
       },
-      subcell_id: {
+      parent_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {

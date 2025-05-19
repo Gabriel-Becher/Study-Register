@@ -9,6 +9,7 @@ require("./src/database");
 
 const userRoutes = require("./src/routes/userRoutes");
 const workspaceRoutes = require("./src/routes/workspaceRoutes");
+const cellRoutes = require("./src/routes/cellRoutes");
 
 class App {
   constructor() {
@@ -27,6 +28,10 @@ class App {
   routes() {
     this.app.use("/users", userRoutes);
     this.app.use("/workspaces", workspaceRoutes);
+    this.app.use("/cells", cellRoutes);
+    this.app.use((req, res) => {
+      res.status(404).json({errors: ["Route not found"], data: []});
+    });
   }
 
   uploadPath() {
