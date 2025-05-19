@@ -61,11 +61,16 @@ class User extends Model {
         user.password_hash = await bcript.hash(user.password, 10);
       }
     });
+    this.bind();
   }
   static associate(models) {
     this.hasMany(models.Workspace, {
       foreignKey: "user_id",
     });
+  }
+
+  async checkPassword(password) {
+    return await bcript.compare(password, this.password_hash);
   }
 }
 

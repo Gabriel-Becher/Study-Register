@@ -12,6 +12,7 @@ const workspaceRoutes = require("./src/routes/workspaceRoutes");
 const cellRoutes = require("./src/routes/cellRoutes");
 const textfieldRoutes = require("./src/routes/textfieldsRoutes");
 const imageRoutes = require("./src/routes/imageRoutes");
+const tokenRoutes = require("./src/routes/tokenRoutes");
 
 class App {
   constructor() {
@@ -33,6 +34,7 @@ class App {
     this.app.use("/cells", cellRoutes);
     this.app.use("/textfields", textfieldRoutes);
     this.app.use("/pictures", imageRoutes);
+    this.app.use("/login", tokenRoutes);
   }
 
   uploadPath() {
