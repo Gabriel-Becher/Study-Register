@@ -10,28 +10,29 @@ require("./src/database");
 const userRoutes = require("./src/routes/userRoutes");
 const workspaceRoutes = require("./src/routes/workspaceRoutes");
 const cellRoutes = require("./src/routes/cellRoutes");
+const textfieldRoutes = require("./src/routes/textfieldsRoutes");
+const imageRoutes = require("./src/routes/imageRoutes");
 
 class App {
   constructor() {
     this.app = express();
+    this.uploadPath();
     this.middlewares();
     this.routes();
-    this.uploadPath();
   }
 
   middlewares() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(express.static(resolve(__dirname, "..", "uploads")));
+    this.app.use(express.static(resolve(__dirname, "uploads")));
   }
 
   routes() {
     this.app.use("/users", userRoutes);
     this.app.use("/workspaces", workspaceRoutes);
     this.app.use("/cells", cellRoutes);
-    this.app.use((req, res) => {
-      res.status(404).json({errors: ["Route not found"], data: []});
-    });
+    this.app.use("/textfields", textfieldRoutes);
+    this.app.use("/pictures", imageRoutes);
   }
 
   uploadPath() {

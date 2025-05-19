@@ -1,0 +1,26 @@
+GET http://localhost:3000/textfields/1
+###
+
+GET http://localhost:3000/textfields/cell/1
+###
+
+POST http://localhost:3000/textfields
+Content-Type: application/json
+
+{
+  "cell_id": 1,
+  "text": "test"
+}
+
+###
+
+PUT http://localhost:3000/textfields/1
+Content-Type: application/json
+
+{
+  "text": "testUpdate"
+}
+
+###
+
+DELETE http://localhost:3000/textfields/1

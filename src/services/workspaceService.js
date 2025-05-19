@@ -37,6 +37,9 @@ class WorkspaceService {
   }
 
   static async getWorkspaceById(id) {
+    if (!id) {
+      return { status: 400, errors: ["Workspace ID is required"], data: [] };
+    }
     try {
       const workspace = await Workspace.findByPk(id);
       if (!workspace) {
@@ -55,6 +58,9 @@ class WorkspaceService {
   }
 
   static async getWorkspacesByUserId(userId) {
+    if (!userId) {
+      return { status: 400, errors: ["User ID is required"], data: [] };
+    }
     try {
       const workspaces = await Workspace.findAll({
         where: { user_id: userId },
@@ -79,6 +85,9 @@ class WorkspaceService {
   }
 
   static async createWorkspace(workspaceData) {
+    if (!workspaceData.user_id) {
+      return { status: 400, errors: ["User ID is required"], data: [] };
+    }
     try {
       const newWorkspace = await Workspace.create(workspaceData);
       return { status: 201, errors: [], data: newWorkspace };
@@ -94,6 +103,9 @@ class WorkspaceService {
   }
 
   static async updateWorkspace(id, workspaceData) {
+    if (!id) {
+      return { status: 400, errors: ["Workspace ID is required"], data: [] };
+    }
     try {
       const workspace = await Workspace.findByPk(id);
       if(!workspace) {
@@ -125,6 +137,9 @@ class WorkspaceService {
   }
 
   static async deleteWorkspace(id) {
+    if (!id) {
+      return { status: 400, errors: ["Workspace ID is required"], data: [] };
+    }
     try {
       const workspace = await Workspace.findByPk(id);
       if (!workspace) {

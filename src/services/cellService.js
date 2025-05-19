@@ -16,7 +16,7 @@ class CellService {
                 },
                 {
                     model: Image,
-                    attributes: ['id', 'url', 'position'],
+                    attributes: ['id', 'url', 'position', "filename"],
                 },
                 {
                     model: Cell,
@@ -55,7 +55,7 @@ class CellService {
                     },
                     {
                         model: Image,
-                        attributes: ['id', 'url', 'position'],
+                        attributes: ['id', 'url', 'position', "filename"],
                     },
                     {
                         model: Cell,
@@ -78,7 +78,6 @@ class CellService {
     }
 
     static async createCell(cellData) {
-        console.log(cellData)
         if(!cellData.workspace_id == !cellData.parent_id){
             return { status: 400, errors: ['Workspace id OR Parent id are required'], data: [] };
         }
