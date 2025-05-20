@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 ###
 GET http://localhost:3000/users/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InRlc3R1c2VyIiwiZW1haWwiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiaWF0IjoxNzQ3Njg4MjY3LCJleHAiOjE3NDc3NzQ2Njd9.ArAo3qmRtNIxrgJREW0b3H8FrTqBi6RMUnVogg3NHAQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6InRlc3R1c2VyIiwiZW1haWwiOiJ0ZXN0ZW1haWxAZ21haWwuY29tIiwiaWF0IjoxNzQ3Njg5MDkwLCJleHAiOjE3NDc2ODkwOTV9.ZoYX-SMtI-Gh5n5wDOfbzMFTiba21Q6j3xQLCHZ-Rmw
 
 ###
 

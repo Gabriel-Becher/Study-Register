@@ -36,7 +36,7 @@ class TokenController {
       },
       secret,
       {
-        expiresIn: "5s",
+        expiresIn: "4h",
       }
     );
     return res.status(200).json({ errors: [], data: token });
