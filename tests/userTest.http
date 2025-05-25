@@ -4,8 +4,8 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "name": "Gabriela",
-  "email": "gabriela@hotmail.com",
+  "name": "Gabriel",
+  "email": "gabriel@hotmail.com",
   "password": "123456"
 }
 ###
@@ -22,5 +22,5 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/users/1
+DELETE http://localhost:3000/users/2
 ###

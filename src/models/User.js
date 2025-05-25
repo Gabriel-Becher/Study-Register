@@ -61,7 +61,6 @@ class User extends Model {
         user.password_hash = await bcript.hash(user.password, 10);
       }
     });
-    this.bind();
   }
   static associate(models) {
     this.hasMany(models.Workspace, {

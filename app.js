@@ -4,6 +4,7 @@ const express = require("express");
 
 const { join, resolve } = require("path");
 const { existsSync, mkdirSync } = require("fs");
+const cors = require("cors");
 
 require("./src/database");
 
@@ -26,6 +27,7 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.static(resolve(__dirname, "uploads")));
+    this.app.use(cors());
   }
 
   routes() {

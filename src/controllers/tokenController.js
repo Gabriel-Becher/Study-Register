@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const { where } = require("sequelize");
 const User = require("../models/User");
 
 const jwt = require("jsonwebtoken");
@@ -18,11 +17,13 @@ class TokenController {
       user = await User.findOne({
         where: { email },
       });
-      console.log(user);
     } catch (error) {
       return res
         .status(500)
         .json({ errors: error.errors?.map((x) => x.message), data: [] });
+    }
+    if (!user) {
+      return res.status(404).json({ errors: ["User not found"], data: [] });
     }
     const valid = await user.checkPassword(password);
     if (!valid) {
